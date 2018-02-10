@@ -123,25 +123,34 @@ class TicTacToe:
     '''
     The actual game. Runs once.
     '''
+    play = True
+
     self.startup_menu()
-    while not self.winner:
+    while play:
+      while not self.winner:
+        self.print_board()
+        position = self.get_move()
+        if position == "exit":
+          return
+        try:
+          self.add_to_board(position)
+          self.check_board()
+          if not self.winner:
+            self.change_turn()
+        except:
+          print("\n---That spot is already taken.---")
+        
       self.print_board()
-      position = self.get_move()
-      if position == "exit":
-        return
-      try:
-        self.add_to_board(position)
-        self.check_board()
-        if not self.winner:
-          self.change_turn()
-      except:
-        print("\n---That spot is already taken.---")
-      
-    self.print_board()
-    if self.winner == "tie":
-      print("X and O have tied!")
-    else:
-      print(self.next_turn+" has won!")
+      if self.winner == "tie":
+        print("X and O have tied!")
+      else:
+        print(self.next_turn+" has won!")
+
+      response = input("Would you like to play again?")
+      if response.lower() != "yes" and response.lower() != "y":
+        play = False
+      else:
+        self.clear_board()
 
 class ComputerChallenger():
   def __init__(self):
