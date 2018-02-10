@@ -1,7 +1,8 @@
 #board/state
 #type
 #action
-from random import choice
+from random import choice, randint
+import time
 
 class TicTacToe:
   def __init__(self):
@@ -12,6 +13,8 @@ class TicTacToe:
     self.empty_cells = [" ", "_"]
     self.players = ["X","O"]
     self.next_turn = choice(self.players)
+    self.X = computer_challenger()
+    self.O = computer_challenger()
 
   def clear_board(self):
     '''
@@ -55,7 +58,6 @@ class TicTacToe:
 
     self.winner = "tie"
 
-
   #add to the board, team 1 is x, 2 is o, position 0 - 8 right to left, top to bottom
   def add_to_board(self, position):
     col = position % 3
@@ -80,21 +82,40 @@ class TicTacToe:
     else:
       self.next_turn = self.players[0]
 
+  def get_move_from_player(self):
+    position = -1
+    while position not in list(range(9)):
+      position = input(self.next_turn + " it is your turn, please input the position you wish to place your mark (0-8): ")
+      if position.lower() == "exit":
+        return "exit"
+      try:
+        position = int(position)
+      except:
+        pass
+    return position
+
+  def get_move_from_computer(self, computer):
+    print("Computer's turn:")
+    time.sleep(1)
+    return computer.get_move(self.board)
+
+  def get_move(self):
+    next_player = self.next_turn
+    next_computer = getattr(self, next_player)
+    if next_computer:
+      return self.get_move_from_computer(next_computer)
+    else:
+      return self.get_move_from_player()
+
   def play_game(self):
     '''
     The actual game. Runs once.
     '''
     while not self.winner:
       self.print_board()
-      position = -1
-      while position not in list(range(9)):
-        position = input(self.next_turn + " it is your turn, please input the position you wish to place your mark (0-8): ")
-        if position.lower() == "exit":
-          return
-        try:
-          position = int(position)
-        except:
-          pass
+      position = self.get_move()
+      if position == "exit":
+        return
       try:
         self.add_to_board(position)
         self.check_board()
@@ -109,6 +130,14 @@ class TicTacToe:
     else:
       print(self.next_turn+" has won!")
 
+class computer_challenger():
+  def __init__(self):
+    self.random_percentage = 1
+
+  def get_move(self, board):
+    return randint(0,8)
+
 if __name__ == "__main__":
+
   game = TicTacToe()
   game.play_game()
