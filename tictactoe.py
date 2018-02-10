@@ -13,8 +13,21 @@ class TicTacToe:
     self.empty_cells = [" ", "_"]
     self.players = ["X","O"]
     self.next_turn = choice(self.players)
-    self.X = computer_challenger()
-    self.O = computer_challenger()
+    self.X = None
+    self.O = None
+
+  def get_player_type(self, symbol):
+    player_type = input("Is "+symbol+" a computer or player? ")
+    if player_type.lower() == "computer":
+      return ComputerChallenger()
+    elif player_type == "player":
+      return Player()
+
+  def startup_menu(self):
+    while not self.X:
+      self.X = self.get_player_type("X")
+    while not self.O:
+      self.O = self.get_player_type("O")
 
   def clear_board(self):
     '''
@@ -100,9 +113,8 @@ class TicTacToe:
     return computer.get_move(self.board)
 
   def get_move(self):
-    next_player = self.next_turn
-    next_computer = getattr(self, next_player)
-    if next_computer:
+    next_computer = getattr(self, self.next_turn)
+    if isinstance(next_computer, ComputerChallenger):
       return self.get_move_from_computer(next_computer)
     else:
       return self.get_move_from_player()
@@ -111,6 +123,7 @@ class TicTacToe:
     '''
     The actual game. Runs once.
     '''
+    self.startup_menu()
     while not self.winner:
       self.print_board()
       position = self.get_move()
@@ -130,12 +143,16 @@ class TicTacToe:
     else:
       print(self.next_turn+" has won!")
 
-class computer_challenger():
+class ComputerChallenger():
   def __init__(self):
     self.random_percentage = 1
 
   def get_move(self, board):
     return randint(0,8)
+
+class Player():
+  def __init__(self):
+    pass
 
 if __name__ == "__main__":
 
