@@ -123,9 +123,13 @@ class TicTacToe:
     '''
     The actual game. Runs once.
     '''
+    # Flag to keep playing
     play = True
 
+    # Set options for game play
     self.startup_menu()
+
+    # game loop
     while play:
       while not self.winner:
         self.print_board()
@@ -139,13 +143,15 @@ class TicTacToe:
             self.change_turn()
         except:
           print("\n---That spot is already taken.---")
-        
+      
+      # game over print up  
       self.print_board()
       if self.winner == "tie":
         print("X and O have tied!")
       else:
         print(self.next_turn+" has won!")
 
+      # New game?
       response = input("Would you like to play again?")
       if response.lower() != "yes" and response.lower() != "y":
         play = False
